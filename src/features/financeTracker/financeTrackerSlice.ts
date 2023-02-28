@@ -1,11 +1,11 @@
-import {Category, CategoryApi} from "../../types";
+import {Category, CategoryApi, TransactionsApi} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {
   createCategory,
-  createTransaction,
+  createTransaction, fetchAllTransactions,
   fetchCategories,
   fetchOneCategory,
-  removeCategory,
+  removeCategory, removeTransaction,
   updateCategory
 } from "./financeTrackerThunks";
 import {RootState} from "../../app/store";
@@ -17,6 +17,7 @@ interface FinanceTrackerState {
   createLoading: boolean;
   updateLoading: boolean;
   removeLoading: false | string;
+  transactions: TransactionsApi[];
 
 }
 
@@ -27,7 +28,7 @@ const initialState: FinanceTrackerState = {
   createLoading: false,
   updateLoading: false,
   removeLoading: false,
-
+  transactions: [],
 }
 
 export const financeTrackerSlice = createSlice({
@@ -92,10 +93,27 @@ export const financeTrackerSlice = createSlice({
     builder.addCase(createTransaction.rejected, state => {
       state.createLoading = false;
     });
+    builder.addCase(fetchAllTransactions.pending, state => {
+      state.fetchLoading = true;
+    });
+    builder.addCase(fetchAllTransactions.fulfilled, (state, {payload: transaction}) => {
+      state.fetchLoading = false;
+      state.transactions = transaction;
+    });
+    builder.addCase(fetchAllTransactions.rejected, state => {
+      state.fetchLoading = false;
+    });
+    builder.addCase(removeTransaction.pending, (state, {meta: {arg: transactionId}}) => {
+      state.removeLoading = transactionId;
+    });
+    builder.addCase(removeTransaction.fulfilled, state => {
+      state.removeLoading = false;
+    });
+    builder.addCase(removeTransaction.rejected, state => {
+      state.removeLoading = false;
+    });
   }
 });
-
-
 
 export const financeTrackerReducer = financeTrackerSlice.reducer;
 
@@ -105,5 +123,6 @@ export const selectCreateLoading = (state: RootState) => state.financeTracker.cr
 export const selectUpdateLoading = (state: RootState) => state.financeTracker.updateLoading;
 export const selectFetchLoading = (state: RootState) => state.financeTracker.fetchLoading;
 export const selectRemoveLoading = (state: RootState) => state.financeTracker.removeLoading;
+export const selectTransactions = (state: RootState) => state.financeTracker.transactions;
 
 

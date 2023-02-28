@@ -6,6 +6,7 @@ import Categories from "./containers/Categories/Categories";
 import EditCategory from "./containers/EditCategory/EditCategory";
 import Navbar from "./components/Navbar/Navbar";
 import AddTransaction from "./containers/AddTransaction/AddTransaction";
+import Home from "./containers/Home/Home";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       </header>
       <Container sx={{mt: 5}}>
         <Routes>
+          <Route path="/" element={<Home/>}/>
           <Route path="/categories" element={<Categories/>}/>
           <Route path="/categories/add-category" element={<AddCategory/>}/>
           <Route path="/categories/edit-category/:id" element={<EditCategory/>}/>

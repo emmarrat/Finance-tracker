@@ -1,5 +1,12 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {CategoriesFromFirebase, Category, CategoryApi, TransactionPost} from "../../types";
+import {
+  CategoriesFromFirebase,
+  Category,
+  CategoryApi,
+  TransactionPost,
+  TransactionsApi,
+  TransactionsFromFirebase
+} from "../../types";
 import axiosApi from "../../axiosApi";
 
 export const createCategory = createAsyncThunk<void, Category>(
@@ -69,3 +76,43 @@ export const createTransaction = createAsyncThunk<void, TransactionPost>(
     await axiosApi.post('/transactions.json', transaction);
   }
 );
+
+
+export const fetchAllTransactions = createAsyncThunk<TransactionsApi[]>(
+  'financeTracker/fetchAllTransactions',
+  async () => {
+    const [transactionsResponse, categoriesResponse] = await Promise.all([
+      axiosApi.get<TransactionsFromFirebase>('/transactions.json'),
+      axiosApi.get<CategoriesFromFirebase>('/categories.json')
+    ]);
+
+    const transactionsList = transactionsResponse.data || {};
+    const categoriesList = categoriesResponse.data || {};
+
+    const newTransactions = Object.entries(transactionsList).map(([id, transaction]) => {
+      const category = categoriesList[transaction.category];
+      if (!category) return null;
+
+      return {
+        type: category.type,
+        name: category.name,
+        amount: transaction.amount,
+        createdAt: transaction.createdAt,
+        id
+      };
+    }).filter(Boolean) as TransactionsApi[];
+
+    newTransactions.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+
+    return newTransactions;
+  }
+);
+
+export const removeTransaction = createAsyncThunk<void, string>(
+  'financeTracker/removeTransaction',
+  async (transactionId) => {
+    await axiosApi.delete('/transactions/' + transactionId + '.json');
+  }
+);
+
+
