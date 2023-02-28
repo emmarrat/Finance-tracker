@@ -37,3 +37,28 @@ export const removeCategory = createAsyncThunk<void, string>(
     await axiosApi.delete('/categories/' + categoryId + '.json');
   }
 );
+
+
+export const fetchOneCategory = createAsyncThunk<Category, string>(
+  'financeTracker/fetchOneCategory',
+  async (id) => {
+    const categoryResponse = await axiosApi.get<Category | null>('/categories/' + id + '.json');
+    const category = categoryResponse.data;
+    if (category === null) {
+      throw new Error('Not found!');
+    }
+    return category;
+  }
+);
+
+interface UpdateCategoryParams {
+  id: string,
+  category: Category,
+}
+
+export const updateCategory = createAsyncThunk<void, UpdateCategoryParams>(
+  'financeTracker/updateCategory',
+  async (params) => {
+    await axiosApi.put('/categories/' + params.id + '.json', params.category);
+  }
+);
