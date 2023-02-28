@@ -4,6 +4,7 @@ import {Container, CssBaseline} from "@mui/material";
 import AddCategory from "./containers/AddCategory/AddCategory";
 import Categories from "./containers/Categories/Categories";
 import EditCategory from "./containers/EditCategory/EditCategory";
+import Navbar from "./components/Navbar/Navbar";
 
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
     <>
       <CssBaseline/>
       <header>
+        <Navbar/>
       </header>
       <Container sx={{mt: 5}}>
         <Routes>
