@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {CategoriesFromFirebase, Category, CategoryApi} from "../../types";
+import {CategoriesFromFirebase, Category, CategoryApi, TransactionPost} from "../../types";
 import axiosApi from "../../axiosApi";
 
 export const createCategory = createAsyncThunk<void, Category>(
@@ -60,5 +60,12 @@ export const updateCategory = createAsyncThunk<void, UpdateCategoryParams>(
   'financeTracker/updateCategory',
   async (params) => {
     await axiosApi.put('/categories/' + params.id + '.json', params.category);
+  }
+);
+
+export const createTransaction = createAsyncThunk<void, TransactionPost>(
+  'financeTracker/createTransaction',
+  async (transaction) => {
+    await axiosApi.post('/transactions.json', transaction);
   }
 );

@@ -2,6 +2,7 @@ import {Category, CategoryApi} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {
   createCategory,
+  createTransaction,
   fetchCategories,
   fetchOneCategory,
   removeCategory,
@@ -81,6 +82,15 @@ export const financeTrackerSlice = createSlice({
     });
     builder.addCase(updateCategory.rejected, state => {
       state.updateLoading = false;
+    });
+    builder.addCase(createTransaction.pending, state => {
+      state.createLoading = true;
+    });
+    builder.addCase(createTransaction.fulfilled, state => {
+      state.createLoading = false;
+    });
+    builder.addCase(createTransaction.rejected, state => {
+      state.createLoading = false;
     });
   }
 });

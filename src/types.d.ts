@@ -9,3 +9,9 @@ export interface CategoryApi extends Category{
 export interface CategoriesFromFirebase {
   [id: string]: Category;
 }
+
+export interface TransactionPost {
+  category: string;
+  amount: number;
+  createdAt: string;
+}

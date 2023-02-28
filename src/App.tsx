@@ -5,6 +5,7 @@ import AddCategory from "./containers/AddCategory/AddCategory";
 import Categories from "./containers/Categories/Categories";
 import EditCategory from "./containers/EditCategory/EditCategory";
 import Navbar from "./components/Navbar/Navbar";
+import AddTransaction from "./containers/AddTransaction/AddTransaction";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/categories" element={<Categories/>}/>
           <Route path="/categories/add-category" element={<AddCategory/>}/>
           <Route path="/categories/edit-category/:id" element={<EditCategory/>}/>
+          <Route path="/add-transaction" element={<AddTransaction/>}/>
         </Routes>
       </Container>
     </>
