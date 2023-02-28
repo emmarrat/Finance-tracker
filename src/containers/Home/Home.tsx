@@ -33,7 +33,7 @@ const Home = () => {
     <>
       <Box maxWidth="200px" padding={2}  borderRadius={2} boxShadow={2} mb={5}>
         <Typography component="div" variant="subtitle1">
-          Total: <Typography component="span" variant={"subtitle1"} >{total} $USD</Typography>
+          Total: <Typography component="span" variant={"subtitle1"} color={total < 0 ? "red" : "green"}>{total} $USD</Typography>
         </Typography>
       </Box>
       <Grid container flexDirection="column" alignItems="center">
