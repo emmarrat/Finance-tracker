@@ -50,7 +50,7 @@ const TransactionCard: React.FC<Props> = ({transaction, loading, onClick}) => {
             width={{xs: "100%", md:"70%"}}
             mb={{xs: "15px", md: "0"}}
           >
-            <Typography variant="body1" ml={2}>{transaction.name}</Typography>
+            <Typography variant="body1" ml={2} mr={1}>{transaction.name}</Typography>
             <TextMui textAlign="center">
              <span> {transaction.type === 'expense' ? '-' : '+'}</span>
              <span>{transaction.amount} USD</span>
