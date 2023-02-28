@@ -1,6 +1,6 @@
 import {Category, CategoryApi} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
-import {createCategory} from "./financeTrackerThunks";
+import {createCategory, fetchCategories, removeCategory} from "./financeTrackerThunks";
 import {RootState} from "../../app/store";
 
 interface FinanceTrackerState {
@@ -36,6 +36,25 @@ export const financeTrackerSlice = createSlice({
     });
     builder.addCase(createCategory.rejected, state => {
       state.createLoading = false;
+    });
+    builder.addCase(fetchCategories.pending, state => {
+      state.fetchLoading = true;
+    });
+    builder.addCase(fetchCategories.fulfilled, (state, {payload: categories}) => {
+      state.fetchLoading = false;
+      state.categories = categories;
+    });
+    builder.addCase(fetchCategories.rejected, state => {
+      state.fetchLoading = false;
+    });
+    builder.addCase(removeCategory.pending, (state, {meta: {arg: categoryId}}) => {
+      state.removeLoading = categoryId;
+    });
+    builder.addCase(removeCategory.fulfilled, state => {
+      state.removeLoading = false;
+    });
+    builder.addCase(removeCategory.rejected, state => {
+      state.removeLoading = false;
     });
   }
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import {Route, Routes} from "react-router-dom";
 import {Container, CssBaseline} from "@mui/material";
 import AddCategory from "./containers/AddCategory/AddCategory";
+import Categories from "./containers/Categories/Categories";
 
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       </header>
       <Container sx={{mt: 5}}>
         <Routes>
+          <Route path="/categories" element={<Categories/>}/>
           <Route path="/categories/add-category" element={<AddCategory/>}/>
         </Routes>
       </Container>

@@ -5,3 +5,7 @@ export interface Category {
 export interface CategoryApi extends Category{
   id: string;
 }
+
+export interface CategoriesFromFirebase {
+  [id: string]: Category;
+}
