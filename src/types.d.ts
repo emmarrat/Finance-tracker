@@ -30,3 +30,7 @@ export interface TransactionsApi extends Transaction{
 export interface TransactionsFromFirebase {
   [id: string]: TransactionPost;
 }
+
+export interface TransactionMutation extends Transaction {
+  amount: string;
+}

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TransactionPost} from "../../types";
+import {TransactionMutation, TransactionPost} from "../../types";
 import {useNavigate} from "react-router-dom";
 import {useAppSelector} from "../../app/hooks";
 import {selectAllCategories} from "../../features/financeTracker/financeTrackerSlice";
@@ -9,13 +9,14 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 interface Props {
   onSubmit: (category: TransactionPost) => void;
   loading: boolean;
+  editingTransaction?: TransactionMutation;
 }
 
-const TransactionForm: React.FC<Props> = ({onSubmit, loading}) => {
+const TransactionForm: React.FC<Props> = ({onSubmit, loading, editingTransaction}) => {
   const navigate = useNavigate();
   const categoriesState = useAppSelector(selectAllCategories);
 
-  const [transaction, setTransaction] = useState({
+  const [transaction, setTransaction] = useState<TransactionMutation>(editingTransaction ? editingTransaction : {
     type: '',
     name: '',
     amount: '',
@@ -30,7 +31,6 @@ const TransactionForm: React.FC<Props> = ({onSubmit, loading}) => {
       return null;
     });
   };
-
   const sortedCategories = sortCategory();
 
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,17 +58,14 @@ const TransactionForm: React.FC<Props> = ({onSubmit, loading}) => {
       onSubmit({
         amount: parseFloat(transaction.amount),
         category: key,
-        createdAt: createdAt ,
+        createdAt: editingTransaction ? transaction.createdAt : createdAt,
       });
     }
   };
   return (
     <>
-      <Typography
-        variant="h4"
-        textAlign="center"
-      >Add Transaction
-      </Typography>
+      <Typography variant="h4"
+                  textAlign="center">{editingTransaction ? 'Update Transaction' : 'Add Transaction'}</Typography>
       <form
         autoComplete="off"
         onSubmit={onFormSubmit}
@@ -93,23 +90,23 @@ const TransactionForm: React.FC<Props> = ({onSubmit, loading}) => {
               <MenuItem value="expense">Expense</MenuItem>
             </TextField>
           </Grid>
-            <Grid item container justifyContent="center" >
-              <TextField
-                sx={{width: '70%'}}
-                select
-                label="Category"
-                name="name"
-                value={transaction.name}
-                onChange={onChangeForm}
-                required
-                id="name"
-              >
-                <MenuItem value="" disabled>Select category</MenuItem>
-                {sortedCategories.map(category => (
-                  <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+          <Grid item container justifyContent="center" >
+            <TextField
+              sx={{width: '70%'}}
+              select
+              label="Category"
+              name="name"
+              value={transaction.name}
+              onChange={onChangeForm}
+              required
+              id="name"
+            >
+              <MenuItem value="" disabled>Select category</MenuItem>
+              {sortedCategories.map(category => (
+                <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>
+              ))}
+            </TextField>
+          </Grid>
           <Grid item container justifyContent="center" >
             <TextField
               sx={{width: '70%'}}
@@ -129,7 +126,7 @@ const TransactionForm: React.FC<Props> = ({onSubmit, loading}) => {
           </Grid>
           <Grid item container justifyContent="center" >
             <Button sx={{width: '70%'}} type="submit" variant="outlined" color="success" disabled={loading}>
-             Add
+              {editingTransaction ? 'Update' : 'Add'}
             </Button>
           </Grid>
         </Grid>
