@@ -2,7 +2,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import {
   CategoriesFromFirebase,
   Category,
-  CategoryApi,
+  CategoryApi, Transaction,
   TransactionPost,
   TransactionsApi,
   TransactionsFromFirebase
@@ -116,3 +116,43 @@ export const removeTransaction = createAsyncThunk<void, string>(
 );
 
 
+export const fetchOneTransaction = createAsyncThunk<Transaction, string>(
+  'financeTracker/fetchOneTransaction',
+  async (id) => {
+    const transactionResponse = await axiosApi.get<TransactionPost | null>('/transactions/' + id + '.json');
+    const transaction = transactionResponse.data;
+    let newTransaction: Transaction = {
+      type: '',
+      name: '',
+      amount: 0,
+      createdAt: '',
+    }
+    if (transaction === null) {
+      throw new Error('Not found!');
+    }
+    const categoryResponse = await axiosApi.get<Category | null>('/categories/' + transaction.category + '.json');
+
+    const category = categoryResponse.data;
+    if (category) {
+      newTransaction = {
+        type: category.type,
+        name: category.name,
+        amount: transaction.amount,
+        createdAt: transaction.createdAt,
+      }
+    }
+    return newTransaction!;
+  }
+);
+
+interface UpdateTransactionParams {
+  id: string,
+  transaction: TransactionPost,
+}
+
+export const updateTransaction = createAsyncThunk<void, UpdateTransactionParams>(
+  'financeTracker/updateTransaction',
+  async (params) => {
+    await axiosApi.put('/transactions/' + params.id + '.json', params.transaction);
+  }
+);

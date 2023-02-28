@@ -1,12 +1,12 @@
-import {Category, CategoryApi, TransactionsApi} from "../../types";
+import {Category, CategoryApi, Transaction, TransactionsApi} from "../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {
   createCategory,
   createTransaction, fetchAllTransactions,
   fetchCategories,
-  fetchOneCategory,
+  fetchOneCategory, fetchOneTransaction,
   removeCategory, removeTransaction,
-  updateCategory
+  updateCategory, updateTransaction
 } from "./financeTrackerThunks";
 import {RootState} from "../../app/store";
 
@@ -18,7 +18,7 @@ interface FinanceTrackerState {
   updateLoading: boolean;
   removeLoading: false | string;
   transactions: TransactionsApi[];
-
+  oneTransaction: Transaction | null;
 }
 
 const initialState: FinanceTrackerState = {
@@ -29,6 +29,7 @@ const initialState: FinanceTrackerState = {
   updateLoading: false,
   removeLoading: false,
   transactions: [],
+  oneTransaction: null,
 }
 
 export const financeTrackerSlice = createSlice({
@@ -112,6 +113,27 @@ export const financeTrackerSlice = createSlice({
     builder.addCase(removeTransaction.rejected, state => {
       state.removeLoading = false;
     });
+
+    builder.addCase(fetchOneTransaction.pending, state => {
+      state.fetchLoading = true;
+      state.oneTransaction = null;
+    });
+    builder.addCase(fetchOneTransaction.fulfilled, (state, {payload: transaction}) => {
+      state.fetchLoading = false;
+      state.oneTransaction = transaction;
+    });
+    builder.addCase(fetchOneTransaction.rejected, state => {
+      state.fetchLoading = false;
+    });
+    builder.addCase(updateTransaction.pending, state => {
+      state.updateLoading = true;
+    });
+    builder.addCase(updateTransaction.fulfilled, state => {
+      state.updateLoading = false;
+    });
+    builder.addCase(updateTransaction.rejected, state => {
+      state.updateLoading = false;
+    });
   }
 });
 
@@ -124,5 +146,7 @@ export const selectUpdateLoading = (state: RootState) => state.financeTracker.up
 export const selectFetchLoading = (state: RootState) => state.financeTracker.fetchLoading;
 export const selectRemoveLoading = (state: RootState) => state.financeTracker.removeLoading;
 export const selectTransactions = (state: RootState) => state.financeTracker.transactions;
+export const selectOneTransaction = (state: RootState) => state.financeTracker.oneTransaction;
+
 
 
