@@ -19,6 +19,7 @@ interface FinanceTrackerState {
   removeLoading: false | string;
   transactions: TransactionsApi[];
   oneTransaction: Transaction | null;
+  total: number;
 }
 
 const initialState: FinanceTrackerState = {
@@ -30,6 +31,7 @@ const initialState: FinanceTrackerState = {
   removeLoading: false,
   transactions: [],
   oneTransaction: null,
+  total: 0
 }
 
 export const financeTrackerSlice = createSlice({
@@ -100,6 +102,16 @@ export const financeTrackerSlice = createSlice({
     builder.addCase(fetchAllTransactions.fulfilled, (state, {payload: transaction}) => {
       state.fetchLoading = false;
       state.transactions = transaction;
+      state.total = state.transactions.reduce((acc, transaction) => {
+
+        if (transaction.type === 'income') {
+          return acc + transaction.amount
+        }
+        if (transaction.type === 'expense') {
+          return acc - transaction.amount
+        }
+        return acc
+      }, 0);
     });
     builder.addCase(fetchAllTransactions.rejected, state => {
       state.fetchLoading = false;
@@ -147,6 +159,5 @@ export const selectFetchLoading = (state: RootState) => state.financeTracker.fet
 export const selectRemoveLoading = (state: RootState) => state.financeTracker.removeLoading;
 export const selectTransactions = (state: RootState) => state.financeTracker.transactions;
 export const selectOneTransaction = (state: RootState) => state.financeTracker.oneTransaction;
-
-
+export const selectTotal = (state: RootState) => state.financeTracker.total;
 

@@ -3,11 +3,11 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {fetchAllTransactions, removeTransaction} from "../../features/financeTracker/financeTrackerThunks";
 import {
   selectFetchLoading,
-  selectRemoveLoading,
+  selectRemoveLoading, selectTotal,
   selectTransactions
 } from "../../features/financeTracker/financeTrackerSlice";
 import TransactionCard from "../../components/TransactionCard/TransactionCard";
-import {Grid} from '@mui/material';
+import {Box, Grid, Typography} from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Home = () => {
@@ -15,6 +15,8 @@ const Home = () => {
   const transactionsState = useAppSelector(selectTransactions);
   const fetchLoading = useAppSelector(selectFetchLoading);
   const removeLoading = useAppSelector(selectRemoveLoading)
+  const total = useAppSelector(selectTotal);
+
 
   useEffect(() => {
     dispatch(fetchAllTransactions());
@@ -29,6 +31,11 @@ const Home = () => {
 
   return (
     <>
+      <Box maxWidth="200px" padding={2}  borderRadius={2} boxShadow={2} mb={5}>
+        <Typography component="div" variant="subtitle1">
+          Total: <Typography component="span" variant={"subtitle1"} >{total} $USD</Typography>
+        </Typography>
+      </Box>
       <Grid container flexDirection="column" alignItems="center">
         {fetchLoading ? <CircularProgress/> : transactionsState.map(transaction => (
           <TransactionCard
